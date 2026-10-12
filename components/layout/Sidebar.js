@@ -11,10 +11,12 @@ import {
   PanelLeftOpen,
   Code2,
   Sparkles,
+  Users,
 } from "lucide-react";
 import { useSidebarStore } from "@/lib/stores/sidebar.store";
 import { useCategories } from "@/lib/hooks/useCategories";
 import { useReferences } from "@/lib/hooks/useReferences";
+import { useSubscribers } from "@/lib/hooks/useSubscribers";
 import { useEffect, useState } from "react";
 
 const NAV_ITEMS = [
@@ -42,6 +44,12 @@ const NAV_ITEMS = [
     icon: PlusCircle,
     badge: "New",
   },
+  {
+    name: "Users",
+    href: "/users",
+    icon: Users,
+    badgeKey: "subscribersCount",
+  },
 ];
 
 export default function Sidebar() {
@@ -49,6 +57,7 @@ export default function Sidebar() {
   const { sidebarCollapsed, toggleSidebar } = useSidebarStore();
   const { data: categoriesData } = useCategories({ limit: 100 });
   const { data: referencesData } = useReferences({ limit: 1000 });
+  const { data: subscribersData } = useSubscribers({ limit: 100 });
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -57,10 +66,14 @@ export default function Sidebar() {
 
   const categories = categoriesData?.categories || [];
   const references = referencesData?.references || [];
+  const subscribers = subscribersData?.subscribers || [];
 
   const counts = {
     categoriesCount: mounted ? categories.length : 0,
     referencesCount: mounted ? references.length : 0,
+    subscribersCount: mounted
+      ? (subscribersData?.pagination?.total ?? subscribers.length)
+      : 0,
   };
 
   return (

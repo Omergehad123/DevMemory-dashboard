@@ -13,9 +13,11 @@ import {
   Terminal,
   FileEdit,
   ExternalLink,
+  Users,
 } from "lucide-react";
 import { useCategories } from "@/lib/hooks/useCategories";
 import { useReferences } from "@/lib/hooks/useReferences";
+import { useSubscribers } from "@/lib/hooks/useSubscribers";
 import { useEffect, useState } from "react";
 
 export default function OverviewPage() {
@@ -23,6 +25,9 @@ export default function OverviewPage() {
     limit: 100,
   });
   const { data: categoriesData, isLoading: isCategoriesLoading } = useCategories({
+    limit: 100,
+  });
+  const { data: subscribersData } = useSubscribers({
     limit: 100,
   });
   const [mounted, setMounted] = useState(false);
@@ -33,6 +38,8 @@ export default function OverviewPage() {
 
   const categories = categoriesData?.categories || [];
   const references = referencesData?.references || [];
+  const subscribers = subscribersData?.subscribers || [];
+  const totalSubscribers = subscribersData?.pagination?.total ?? subscribers.length;
 
   if (!mounted || isCategoriesLoading || isReferencesLoading) {
     return (
@@ -153,20 +160,27 @@ export default function OverviewPage() {
           </div>
         </div>
 
-        {/* Card 4: Languages Covered */}
+        {/* Card 4: Newsletter Users */}
         <div className="bg-[#111827] border border-[#1e293b] rounded-2xl p-5 hover:border-purple-500/40 transition-all shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-              Supported Stacks
+              Newsletter Users
             </span>
             <div className="w-9 h-9 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center">
-              <Terminal className="w-4 h-4" />
+              <Users className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-bold text-white mb-1">10+</div>
+          <div className="text-3xl font-bold text-white mb-1">
+            {totalSubscribers}
+          </div>
           <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-400">JS, Python, SQL, CSS...</span>
-            <span className="text-purple-400 font-medium">Ready</span>
+            <span className="text-slate-400">Assigned emails</span>
+            <Link
+              href="/users"
+              className="text-purple-400 hover:text-purple-300 font-medium inline-flex items-center gap-1"
+            >
+              View users <ArrowRight className="w-3 h-3" />
+            </Link>
           </div>
         </div>
       </div>
